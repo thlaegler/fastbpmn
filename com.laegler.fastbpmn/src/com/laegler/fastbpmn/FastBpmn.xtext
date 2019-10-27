@@ -1,0 +1,449 @@
+//==============================================================================
+// (c) Copyright 2013 by Itemis AG, Hamburg, Germany
+//
+// DSL for Process Modeling named "FastBPMN"
+//==============================================================================
+grammar com.laegler.fastbpmn.FastBpmn with org.eclipse.xtext.common.Terminals
+
+generate fastBpmn "http://www.laegler.com/fastbpmn/FastBpmn"
+
+//import "http://www.laegler.com/red/Domainmodel" as domainmodel
+//import "http://www.laegler.com/red/UseCases" as uc
+//import "http://www.yakindu.com/requirements/Commons" as commons
+//import "http://www.yakindu.com/requirements/Requirements" as requirements
+//import "http://www.yakindu.com/requirements/customAttributes/CustomAttributes" as customAttributes
+//import "http://www.yakindu.com/requirements/pageflow/pagespecification/PageSpec" as pages
+//import "http://www.laegler.com/red/Pageflowtext" as pageflowtext
+
+//import "http://www.eclipse.org/emf/2002/Ecore" as ecore
+//import "http://www.eclipse.org/emf/2003/XMLType" as type
+
+//import "http://www.omg.org/spec/BPMN/20100524/MODEL-XMI" as bpmn2
+//import "http://www.omg.org/spec/BPMN/20100524/DI-XMI" as di
+//import "http://www.omg.org/spec/DD/20100524/DC-XMI" as dc
+//import "http://www.omg.org/spec/DD/20100524/DI-XMI" as di0
+
+//==============================================================================
+// DocumentRoot
+//==============================================================================
+FDocumentRoot returns FDocumentRoot:
+//	imports+=FImport*
+	(externalRefs+=FExternal)*
+	(packages+=FProcessPackageDecl)+
+;
+
+//==============================================================================
+// FObject (super tpye for all FastBPMN types; compare to EObject)
+//==============================================================================
+FObject:
+	FDocumentRoot
+	| FProcessPackageDecl
+//	| FRootElement
+	| FProcess
+	| FFlowNode
+	| FAttachment
+	| FSequenceFlow
+	| FDiDiagramElement
+	| FPool
+// corresponding BPMN element
+// ('bpmnelements' bpmnElements+=[ecore::EObject]*)?
+;
+
+//FImport returns FImport:
+//	'import' importURI=STRING
+//;
+
+//==============================================================================
+// ProcessPackageDeclaration (Process Model Definition)
+//==============================================================================
+FProcessPackageDecl returns FProcessPackageDecl:
+//	(modelType=FModelType)?
+	'package'
+		(name=QualifiedName)
+		(label=STRING)?
+//		(
+//			('format' formatType=FFormatType)? &
+//			('editor' editorType=FEditorType)?
+//		)
+//			(rootElements+=FRootElement)+
+			(processes+=FProcess)+
+//			(diagrams+=FDiDiagram)*
+	('end package')?
+;
+
+//==============================================================================
+// RootElement
+//==============================================================================
+//FRootElement:
+//	FProcess
+//	| FCollaboration
+////	| FFlowNode
+//;
+
+FProcess returns FProcess:
+	'process' (name=ID)? (label=STRING)? ('for usecase' usecase=[FExtUseCase|QualifiedName])?
+//		(flowNodes+=FFlowNode)+
+//		(sequenceFlows+=FSequenceFlow)*
+		// Decides whether Collaboration Diagram (Lanes) or Process Diagram (FlowNodes)
+		(pools+=FPool+ | flowNodes+=FFlowNode+)
+	('end process')?
+;
+
+FPool returns FPool:
+	{FPool}
+	'pool' (name=ID)? (label=STRING)? ('for actor' actor=[FExtActor|QualifiedName])? (initializing?='initializing')?
+		(flowNodes+=FFlowNode)*
+	('end pool')?
+;
+
+//==============================================================================
+// FlowNode
+//==============================================================================
+FFlowNode:
+	FActivity
+	| FGateway
+	| FEvent
+	| FLane
+//	| FLoop
+;
+
+// TODO
+//FLoop returns FLoop:
+//	'loop gateway' 'flow to' 'option'
+//;
+
+FLane returns FLane:
+	'lane' (name=ID)? (label=STRING)? ('for actor' actor=[FExtActor|QualifiedName])? (initializing?='initializing')?
+		(flowNodes+=FFlowNode)+
+	'end lane'
+;
+
+//==============================================================================
+// Event
+//==============================================================================
+FEvent returns FEvent:
+	(eventType=FEventType)
+	('of type' eventDefinitionType=FEventDefinitionType)?
+	(nonInterrupting?='non-interrupting')?
+	(name=ID)? (label=STRING)? ('for page' dialog=[FExtPage|QualifiedName])?
+		(attachments+=FAttachment)*
+;
+
+//==============================================================================
+// Activity
+//==============================================================================
+FActivity:
+	FTask
+	| FCallActivity
+	| FSubProcess
+;
+
+FTask returns FTask:
+	(taskType=FTaskType) (name=ID)? (label=STRING)? ('for dialog' dialog=[FExtDialog|QualifiedName])?
+		(attachments+=FAttachment)*
+;
+
+//FCallableElement returns FCallableElement:
+//	FProcess | FPool
+//;
+
+FCallActivity returns FCallActivity:
+	'callactivity' (name=ID)? (label=STRING)? ('calling' calledElement=[FProcess|QualifiedName])
+		(attachments+=FAttachment)*
+;
+
+FSubProcess returns FSubProcess:
+	'subprocess' (name=ID)? (label=STRING)?
+		(attachments+=FAttachment)*
+		(flowNodes+=FFlowNode)+
+	'end subprocess'
+;
+
+//==============================================================================
+// Gateway
+//==============================================================================
+FGateway returns FGateway:
+	FGatewayDiverging | FGatewayConverging
+;
+
+FGatewayDiverging returns FGatewayDiverging:
+	(gatewayType=FGatewayType) (name=ID)? (label=STRING)?
+		(attachments+=FAttachment)*
+		(options+=FOption)+
+	(gatewayConverging=FGatewayConverging)
+;
+
+FGatewayConverging returns FGatewayConverging:
+	('merge' gatewayType=FGatewayType) (name=ID)? (label=STRING)?
+		(attachments+=FAttachment)*
+;
+
+FOptionFlowNode:
+	FActivity | FEvent | FGatewayDiverging
+;
+
+FOption returns FOption:
+	{FOption}
+	'option' (default?='default')? (name=ID)? (label=STRING)?
+		(flowNodes+=FOptionFlowNode)*
+;
+
+//FGateway returns FGateway:
+//	'gateway'
+//		gatewayType=FGatewayType?
+////		gatewayDirection=FGatewayDirectionType?
+//		name=ID ('label' label=STRING)?
+//		(attachments+=FAttachment)*
+//		(options+=FOption)*
+//	'end' 'gateway' (convergingName=ID)? ('label' convergingLabel=STRING)?
+//;
+
+//FDivergingGateway returns FDivergingGateway:
+//	(gatewayType=FGatewayType) (name=ID)? (label=STRING)?
+//		(attachments+=FAttachment)*
+//;
+
+//==============================================================================
+// Attachment
+//==============================================================================
+FAttachment:
+	FSendMessage
+	| FSendData
+	| FDataIO
+	| FAnnotation
+	| FDocumentation
+	| FFlow
+;
+
+FInteractionNode returns FInteractionNode:
+	FTask | FEvent | FPool
+;
+
+FSendMessage returns FSendMessage:
+	'send message' (name=ID)? (label=STRING)? ('to' receivingElement=[FInteractionNode|QualifiedName]) ('of datatype' dataType=[FExtDataType|QualifiedName])?
+;
+
+FSendData returns FSendData:
+	'send data' (name=ID)? (label=STRING)? ('to' receivingElement=[FFlowNode|QualifiedName]) ('of datatype' dataType=[FExtDataType|QualifiedName])?
+;
+
+FDataIO returns FDataIO:
+	(dataIoType=FDataIOType) (name=ID)? (label=STRING)? ('of datatype' dataType=[FExtDataType|QualifiedName])?
+;
+
+FAnnotation returns FAnnotation:
+	'annotation' (name=ID)? text=STRING
+;
+
+FDocumentation returns FDocumentation:
+	'documentation' (name=ID)? text=STRING
+;
+
+FFlow returns FFlow:
+	'flow'(name=ID)? (label=STRING)? ('to' targetRef=[FFlowNode|QualifiedName])
+;
+
+//==============================================================================
+// External Reference (see Yakindu Requirements)
+//==============================================================================
+// TODO: Due to Migration fix Imports and these References for the right YRT-Rules 
+FExternal:
+	FExtActor
+	| FExtUseCase
+	| FExtPage
+	| FExtDialog
+	| FExtDataType
+;
+
+//FExtActor returns uc::Actor:
+FExtActor returns FExtActor:
+	'actor' (name=ID)
+;
+
+//FExtUseCase return uc::UseCase:
+FExtUseCase returns FExtUseCase:
+	'usecase' (name=ID)
+;
+
+//FExtPage returns pagespec::PageInstance:
+FExtPage returns FExtPage:
+	'page' (name=ID)
+;
+
+//FExtDialog returns pagespec::DialogInstance:
+FExtDialog returns FExtDialog:
+	'dialog' (name=ID)
+;
+
+//FExtDataType returns customAttributes::Type:
+FExtDataType returns FExtDataType:
+	'datatype' (name=ID)
+;
+
+//==============================================================================
+// Types
+//==============================================================================
+enum FTaskType:
+	BLANK='task'
+	| BUSINESSRULE='business rule task'
+	| MANUAL='manual task'
+	| RECEIVE='receive task'
+	| SCRIPT='script task'
+	| SEND='send task'
+	| SERVICE='service task'
+	| USER='user task'
+;
+
+enum FEventType:
+	EVENT='event'
+	| START='start event'
+	| THROW='throwing event'
+	| CATCH='catching event'
+	| INTERMEDIATE_CATCH='intermediate catching event'
+	| INTERMEDIATE_THROW='intermediate throwing event'
+	| END='end event'
+;
+
+enum FEventDefinitionType:
+	BLANK="blank"
+	| MESSAGE='message'
+	| TIMER='timer'
+	| ERROR='error'
+	| ESCALATION='escalation'
+	| CANCEL='cancel'
+	| COMPENSATION='compensation'
+	| CONDITIONAL='conditional'
+	| LINK='link'
+	| SIGNAL='signal'
+	| TERMINATE='terminate'
+	| MULTIPLE='multiple'
+	| PARALLEL_MULTIPLE='parallel multiple'
+;
+
+/* FIXME: Warning because of polymorph enum literal */
+enum FGatewayType:
+	BLANK='gateway'
+	| PARALLEL='parallel gateway'
+	| PARALLEL='and gateway'
+	| INCLUSIVE='inclusive gateway'
+	| INCLUSIVE='or gateway'
+	| EXCLUSIVE='exclusive gateway'
+	| EXCLUSIVE='xor gateway'
+	| EVENTBASED='eventbased gateway'
+	| COMPLEX='complex gateway'
+;
+
+enum FDataIOType:
+	BLANK='data input/output'
+	| INPUT='data input'
+	| OUTPUT='data output'
+;
+
+enum FFormatType:
+	BLANK='FormatType not specified'
+	| BPMN='BPMN'
+	| BPEL='BPEL'
+	| JBPM='JBPM'
+	| UML='UML'
+;
+
+enum FEditorType:
+	BLANK='TargetType not specified'
+	| BPMNMODELER='Eclipse BPMN-Modeler'
+	| YOAQIANG='Yoaqiang'
+	| SIGNAVIO='Signavio Process Editor'
+	| MODELIO='Modelio'
+	| VISIO='Microsoft Visio'
+	| ADONIS='Adonis'
+	| ARIS='ARIS Express'
+	| ACTIVITI='Activiti Modeler'
+	| SPARX='Sparx Enterprise Architect'
+;
+
+enum FModelType:
+	BLANK='ModelType not specified'
+	| PROCESS='process'
+	| COLLABORATION='collaboration'
+	| CHOREOGRAPHY='choreography'
+;
+
+//==============================================================================
+// Diagram
+//==============================================================================
+FDiDiagramElement returns FDiDiagramElement:
+	FDiDiagram
+	| FDiPlane
+	| FDiPlaneElement
+	| FDiBounds
+	| FDiWaypoint
+;
+
+FDiDiagram returns FDiDiagram:
+	'diagram' (name=ID)? (label=STRING)?
+		(plane=FDiPlane)
+//	'end' 'diagram'
+;
+
+FDiPlane returns FDiPlane:
+	'plane' (name=ID)? ('for' bpmnElement=[FProcess|QualifiedName])?
+		(planeElements+=FDiPlaneElement)+
+//	'end' 'plane'
+;
+
+FDiPlaneElement returns FDiPlaneElement:
+	FDiShape
+	| FDiEdge
+;
+
+FDiShape returns FDiShape:
+	'shape' (name=ID)? ('for' flowNode=[FFlowNode|QualifiedName])?
+		(
+			(bounds=FDiBounds) &
+			(isExpanded?='expanded')? &
+			(isHorizontal?='horizontal')?
+		)
+//	'end' 'shape'
+;
+
+FDiEdge returns FDiEdge:
+	'edge' (name=ID) ('for' sequenceFlow=[FSequenceFlow|QualifiedName]) ('from' sourceDiagramShape=[FDiShape|QualifiedName]) ('to' targetDiagramShape=[FDiShape|QualifiedName])
+		(waypoints+=FDiWaypoint)+
+//	'end' 'edge'
+;
+
+FDiBounds returns FDiBounds:
+	'bounds'
+	(
+		('x' x=INT) &
+		('y' y=INT) &
+		('width' width=INT) &
+		('height' height=INT)
+	)
+//	'end' 'bounds'
+;
+
+FDiWaypoint returns FDiWaypoint:
+	'waypoint'
+	(
+		('x' x=INT) &
+		('y' y=INT)
+	)
+//	'end' 'waypoint'
+;
+
+/**
+ * @Deprecated
+ * FSequenceFlow (derived from BPMN SequenceFlow)
+ */
+FSequenceFlow returns FSequenceFlow:
+	'sequence flow' (name=ID)? (label=STRING)? ('from' sourceRef=[FFlowNode|QualifiedName]) ('to' targetRef=[FFlowNode|QualifiedName])
+;
+
+//==============================================================================
+// Terminal
+//==============================================================================
+QualifiedName:
+	ID ('.' ID)*
+;
+
+terminal ID : '^'?('\u00E4'|'\u00F6'|'\u00FC'|'a'..'z'|'A'..'Z'|'\u00C4'|'\u00D6'|'\u00DC'|'_') ('\u00E4'|'\u00F6'|'\u00FC'|'\u00DF'|'a'..'z'|'\u00C4'|'\u00D6'|'\u00DC'|'A'..'Z'|'_'|'0'..'9')*;

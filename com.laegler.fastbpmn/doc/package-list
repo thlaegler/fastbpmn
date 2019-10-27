@@ -1,0 +1,14 @@
+com.laegler.fastbpmn
+com.laegler.fastbpmn.fastBpmn
+com.laegler.fastbpmn.fastBpmn.impl
+com.laegler.fastbpmn.fastBpmn.util
+com.laegler.fastbpmn.formatting
+com.laegler.fastbpmn.generator
+com.laegler.fastbpmn.mapping
+com.laegler.fastbpmn.mapping.tofastbpmn
+com.laegler.fastbpmn.parser.antlr
+com.laegler.fastbpmn.parser.antlr.internal
+com.laegler.fastbpmn.scoping
+com.laegler.fastbpmn.serializer
+com.laegler.fastbpmn.services
+com.laegler.fastbpmn.validation

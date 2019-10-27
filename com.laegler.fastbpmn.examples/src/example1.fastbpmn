@@ -1,0 +1,70 @@
+// Provisorische Referenzen auf ausgewählte YRT-Grammar-Element
+usecase EinUseCaseAusYRT
+actor EinAkteurAusYRT
+page EinePageViewAusYRT
+dialog EinDialogAusYRT
+datatype EinDatenTypAusYRT
+
+// Process Package Declaration
+package KaffeeAutomat
+
+
+	process KaffeeAusgabe for usecase EinUseCaseAusYRT
+		start event KaffeeWurdeAngefordert
+		task WasserKochen
+		intermediate catching event of type timer WartenBisWasserKocht
+		task KaffeeAufgiessen "Kaffee aufgießen"
+		task ZutatenAbfragen
+			data input Benutzereingabe of datatype EinDatenTypAusYRT
+		inclusive gateway WelcheZutaten "Welche Zutaten sollen in den Kaffee?"
+			option MitMilch
+				task MilchHinzugeben
+			option MitZucker
+				task ZuckerHinzugeben
+			option Schwarz
+		merge gateway "Die ausgewählten Zutaten wurde hinzugegeben"
+		task KaffeeAbfuellen "Kaffee abfüllen"
+			documentation "Umlaute und Sonderzeichen im Label werden in das BPMN-Diagramm übernommen?!"
+		callactivity Reinigen calling AutomatReinigen
+		end event of type terminate KaffeeIstFertig
+
+
+	process AutomatReinigen
+		start event ReinigungWurdeGestartet
+		task "Prüfen Füllstand von Reinigungsmittel"
+		or gateway GenugReinigungsmittel "Genug Reinigungsmittel?"
+			option Ja
+			option Nein
+				task "Reinigungsmittel nachfüllen"
+		merge gateway
+		task "Düsen reinigen"
+			annotation "Hier wäre auch ein SubProcess denkbar"
+		end event of type terminate "Automat ist sauber"
+
+
+	process EinTestProzessMitLanes
+		lane EineLane1 for actor EinAkteurAusYRT
+			start event LosGehts
+			task Lane1Task1
+			task Lane1Task2
+				flow EinFlow "Ein zusaetzlicher Flow" to EineLane2.Lane2Task4
+			task Lane1Task3
+			end event "Hier ist schluss"
+		end lane
+		lane EineLane2
+			task Lane2Task4
+			task Lane2Task5
+				flow to EineLane1.Lane1Task3
+		end lane
+	
+
+	process EinTestProzessMitPools
+		pool EinePool1 for actor EinAkteurAusYRT
+			task Pool1Task1
+				send message Nachricht1 "Nachricht zu Pool, ohne den Empfaenger genauer anzugeben" to EinePool2 of datatype EinDatenTypAusYRT
+			task Pool1Task2
+			task Pool1Task3
+		pool EinePool2
+			task Pool2Task4
+			task Pool2Task5
+			send message Nachricht2 "Nachricht zu Task" to EinePool1.Pool1Task2 of datatype EinDatenTypAusYRT

@@ -1,0 +1,59 @@
+/**
+ * (c) Copyright 2013 by Itemis AG, Hamburg, Germany
+ */
+package com.laegler.fastbpmn.generator.exception;
+
+/**
+ * NoShapeFound Exception
+ * 
+ * @author Thomas Laegler <thomas.laegler@googlemail.com>
+ * @version 0.1
+ * 
+ */
+public class NoShapeFoundBpmnException extends BpmnException {
+
+	private static final long serialVersionUID = 1L;
+
+	private static final String DESCRIPTION = "There is no Shape with the given ID: ";
+
+	/**
+	 * 
+	 */
+	public NoShapeFoundBpmnException() {
+		super(DESCRIPTION);
+	}
+
+	/**
+	 * @param message
+	 * @param cause
+	 * @param enableSuppression
+	 * @param writableStackTrace
+	 */
+	public NoShapeFoundBpmnException(String message, Throwable cause,
+			boolean enableSuppression, boolean writableStackTrace) {
+		super(DESCRIPTION + message, cause, enableSuppression, writableStackTrace);
+	}
+
+	/**
+	 * @param message
+	 * @param cause
+	 */
+	public NoShapeFoundBpmnException(String message, Throwable cause) {
+		super(DESCRIPTION + message, cause);
+	}
+
+	/**
+	 * @param message
+	 */
+	public NoShapeFoundBpmnException(String message) {
+		super(DESCRIPTION + message);
+	}
+
+	/**
+	 * @param cause
+	 */
+	public NoShapeFoundBpmnException(Throwable cause) {
+		super(cause);
+	}
+
+}

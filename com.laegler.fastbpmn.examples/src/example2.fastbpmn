@@ -1,0 +1,60 @@
+package EinModell
+	process EinProzess
+		start event Anfang
+		gateway G1
+			option G1_O3
+				task Lol
+				parallel gateway G1_O3_G1
+					option G1_O3_G1_O1
+						task G1_O3_G1_O1_T1
+						task G1_O3_G1_O1_T2
+						task G1_O3_G1_O1_T3
+						task G1_O3_G1_O1_T4
+					option G1_O3_G1_O2
+						task G1_O3_G1_O2_T1
+						task G1_O3_G1_O2_T2
+						task G1_O3_G1_O2_T3
+						task G1_O3_G1_O2_T4
+				merge gateway
+				task KK
+				gateway G1_O3_G2
+					option G1_O3_G2_O1
+						task G1_O3_G2_O1_T1
+						inclusive gateway WelcheZutaten "Welche Zutaten sollen in den Kaffee?"
+							option Schwarz
+							option MitMilch
+								task MilchHinzugeben
+							option MitZucker
+								task ZuckerHinzugeben
+						merge gateway "Die ausgewählten Zutaten wurde hinzugegeben"
+						task G1_O3_G2_O1_T3
+						task G1_O3_G2_O1_T4
+					option G1_O3_G2_O2
+						task G1_O3_G2_O2_T1
+						task G1_O3_G2_O2_T2
+						task G1_O3_G2_O2_T3
+						task G1_O3_G2_O2_T4
+				merge gateway
+			option G1_O2
+				task G1_O2_T1
+				gateway gaga
+					option asdasd
+						task AA
+						task BB
+					option Looooo
+						task ssss
+						task lklklkl
+				merge gateway
+				task G1_O2_T3
+			option G1_O1
+				task G1_O1_T1
+				task G1_O1_T2
+				task G1_O1_T3
+				task G1_O1_T4
+//			option G1_O4
+//				task G1_O4_T1
+//			option G1_O5
+		merge gateway
+		end event Ende
+	end process
+end package

@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="fastBpmn" nsURI="http://www.laegler.com/fastbpmn/FastBpmn" nsPrefix="fastBpmn">
+  <eClassifiers xsi:type="ecore:EClass" name="FDocumentRoot" eSuperTypes="#//FObject">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="externalRefs" upperBound="-1"
+        eType="#//FExternal" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="packages" upperBound="-1"
+        eType="#//FProcessPackageDecl" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FObject"/>
+  <eClassifiers xsi:type="ecore:EClass" name="FProcessPackageDecl" eSuperTypes="#//FObject">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="label" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="processes" upperBound="-1"
+        eType="#//FProcess" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FProcess" eSuperTypes="#//FObject">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="label" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="usecase" eType="#//FExtUseCase"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="pools" upperBound="-1"
+        eType="#//FPool" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="flowNodes" upperBound="-1"
+        eType="#//FFlowNode" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FPool" eSuperTypes="#//FObject #//FInteractionNode">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="label" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="actor" eType="#//FExtActor"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="initializing" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="flowNodes" upperBound="-1"
+        eType="#//FFlowNode" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FFlowNode" eSuperTypes="#//FObject">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="label" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FLane" eSuperTypes="#//FFlowNode">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="actor" eType="#//FExtActor"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="initializing" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="flowNodes" upperBound="-1"
+        eType="#//FFlowNode" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FEvent" eSuperTypes="#//FFlowNode #//FOptionFlowNode #//FInteractionNode">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="eventType" eType="#//FEventType"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="eventDefinitionType" eType="#//FEventDefinitionType"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="nonInterrupting" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="dialog" eType="#//FExtPage"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="attachments" upperBound="-1"
+        eType="#//FAttachment" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FActivity" eSuperTypes="#//FFlowNode #//FOptionFlowNode">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="attachments" upperBound="-1"
+        eType="#//FAttachment" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FTask" eSuperTypes="#//FActivity #//FInteractionNode">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="taskType" eType="#//FTaskType"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="dialog" eType="#//FExtDialog"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FCallActivity" eSuperTypes="#//FActivity">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="calledElement" eType="#//FProcess"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FSubProcess" eSuperTypes="#//FActivity">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="flowNodes" upperBound="-1"
+        eType="#//FFlowNode" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FGateway" eSuperTypes="#//FFlowNode">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="gatewayType" eType="#//FGatewayType"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="attachments" upperBound="-1"
+        eType="#//FAttachment" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FGatewayDiverging" eSuperTypes="#//FGateway #//FOptionFlowNode">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="options" upperBound="-1"
+        eType="#//FOption" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="gatewayConverging" eType="#//FGatewayConverging"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FGatewayConverging" eSuperTypes="#//FGateway"/>
+  <eClassifiers xsi:type="ecore:EClass" name="FOptionFlowNode"/>
+  <eClassifiers xsi:type="ecore:EClass" name="FOption">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="default" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="label" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="flowNodes" upperBound="-1"
+        eType="#//FOptionFlowNode" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FAttachment" eSuperTypes="#//FObject">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FInteractionNode"/>
+  <eClassifiers xsi:type="ecore:EClass" name="FSendMessage" eSuperTypes="#//FAttachment">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="label" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="receivingElement" eType="#//FInteractionNode"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="dataType" eType="#//FExtDataType"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FSendData" eSuperTypes="#//FAttachment">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="label" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="receivingElement" eType="#//FFlowNode"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="dataType" eType="#//FExtDataType"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FDataIO" eSuperTypes="#//FAttachment">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="dataIoType" eType="#//FDataIOType"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="label" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="dataType" eType="#//FExtDataType"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FAnnotation" eSuperTypes="#//FAttachment">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="text" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FDocumentation" eSuperTypes="#//FAttachment">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="text" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FFlow" eSuperTypes="#//FAttachment">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="label" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="targetRef" eType="#//FFlowNode"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FSequenceFlow" eSuperTypes="#//FObject">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="label" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="sourceRef" eType="#//FFlowNode"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="targetRef" eType="#//FFlowNode"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FDiDiagramElement" eSuperTypes="#//FObject"/>
+  <eClassifiers xsi:type="ecore:EClass" name="FDiDiagram" eSuperTypes="#//FDiDiagramElement">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="label" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="plane" eType="#//FDiPlane"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FDiPlane" eSuperTypes="#//FDiDiagramElement">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="bpmnElement" eType="#//FProcess"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="planeElements" upperBound="-1"
+        eType="#//FDiPlaneElement" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FDiPlaneElement" eSuperTypes="#//FDiDiagramElement">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FDiShape" eSuperTypes="#//FDiPlaneElement">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="flowNode" eType="#//FFlowNode"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="bounds" eType="#//FDiBounds"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isExpanded" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isHorizontal" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FDiEdge" eSuperTypes="#//FDiPlaneElement">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="sequenceFlow" eType="#//FSequenceFlow"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="sourceDiagramShape" eType="#//FDiShape"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="targetDiagramShape" eType="#//FDiShape"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="waypoints" upperBound="-1"
+        eType="#//FDiWaypoint" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FDiBounds" eSuperTypes="#//FDiDiagramElement">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="x" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="y" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="width" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="height" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FDiWaypoint" eSuperTypes="#//FDiDiagramElement">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="x" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="y" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FExternal">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FExtActor" eSuperTypes="#//FExternal"/>
+  <eClassifiers xsi:type="ecore:EClass" name="FExtUseCase" eSuperTypes="#//FExternal"/>
+  <eClassifiers xsi:type="ecore:EClass" name="FExtPage" eSuperTypes="#//FExternal"/>
+  <eClassifiers xsi:type="ecore:EClass" name="FExtDialog" eSuperTypes="#//FExternal"/>
+  <eClassifiers xsi:type="ecore:EClass" name="FExtDataType" eSuperTypes="#//FExternal"/>
+  <eClassifiers xsi:type="ecore:EEnum" name="FTaskType">
+    <eLiterals name="BLANK" literal="task"/>
+    <eLiterals name="BUSINESSRULE" value="1" literal="business rule task"/>
+    <eLiterals name="MANUAL" value="2" literal="manual task"/>
+    <eLiterals name="RECEIVE" value="3" literal="receive task"/>
+    <eLiterals name="SCRIPT" value="4" literal="script task"/>
+    <eLiterals name="SEND" value="5" literal="send task"/>
+    <eLiterals name="SERVICE" value="6" literal="service task"/>
+    <eLiterals name="USER" value="7" literal="user task"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="FEventType">
+    <eLiterals name="EVENT" literal="event"/>
+    <eLiterals name="START" value="1" literal="start event"/>
+    <eLiterals name="THROW" value="2" literal="throwing event"/>
+    <eLiterals name="CATCH" value="3" literal="catching event"/>
+    <eLiterals name="INTERMEDIATE_CATCH" value="4" literal="intermediate catching event"/>
+    <eLiterals name="INTERMEDIATE_THROW" value="5" literal="intermediate throwing event"/>
+    <eLiterals name="END" value="6" literal="end event"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="FEventDefinitionType">
+    <eLiterals name="BLANK" literal="blank"/>
+    <eLiterals name="MESSAGE" value="1" literal="message"/>
+    <eLiterals name="TIMER" value="2" literal="timer"/>
+    <eLiterals name="ERROR" value="3" literal="error"/>
+    <eLiterals name="ESCALATION" value="4" literal="escalation"/>
+    <eLiterals name="CANCEL" value="5" literal="cancel"/>
+    <eLiterals name="COMPENSATION" value="6" literal="compensation"/>
+    <eLiterals name="CONDITIONAL" value="7" literal="conditional"/>
+    <eLiterals name="LINK" value="8" literal="link"/>
+    <eLiterals name="SIGNAL" value="9" literal="signal"/>
+    <eLiterals name="TERMINATE" value="10" literal="terminate"/>
+    <eLiterals name="MULTIPLE" value="11" literal="multiple"/>
+    <eLiterals name="PARALLEL_MULTIPLE" value="12" literal="parallel multiple"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="FGatewayType">
+    <eLiterals name="BLANK" literal="gateway"/>
+    <eLiterals name="PARALLEL" value="1" literal="parallel gateway"/>
+    <eLiterals name="INCLUSIVE" value="3" literal="inclusive gateway"/>
+    <eLiterals name="EXCLUSIVE" value="5" literal="exclusive gateway"/>
+    <eLiterals name="EVENTBASED" value="7" literal="eventbased gateway"/>
+    <eLiterals name="COMPLEX" value="8" literal="complex gateway"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="FDataIOType">
+    <eLiterals name="BLANK" literal="data input/output"/>
+    <eLiterals name="INPUT" value="1" literal="data input"/>
+    <eLiterals name="OUTPUT" value="2" literal="data output"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="FFormatType">
+    <eLiterals name="BLANK" literal="FormatType not specified"/>
+    <eLiterals name="BPMN" value="1" literal="BPMN"/>
+    <eLiterals name="BPEL" value="2" literal="BPEL"/>
+    <eLiterals name="JBPM" value="3" literal="JBPM"/>
+    <eLiterals name="UML" value="4" literal="UML"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="FEditorType">
+    <eLiterals name="BLANK" literal="TargetType not specified"/>
+    <eLiterals name="BPMNMODELER" value="1" literal="Eclipse BPMN-Modeler"/>
+    <eLiterals name="YOAQIANG" value="2" literal="Yoaqiang"/>
+    <eLiterals name="SIGNAVIO" value="3" literal="Signavio Process Editor"/>
+    <eLiterals name="MODELIO" value="4" literal="Modelio"/>
+    <eLiterals name="VISIO" value="5" literal="Microsoft Visio"/>
+    <eLiterals name="ADONIS" value="6" literal="Adonis"/>
+    <eLiterals name="ARIS" value="7" literal="ARIS Express"/>
+    <eLiterals name="ACTIVITI" value="8" literal="Activiti Modeler"/>
+    <eLiterals name="SPARX" value="9" literal="Sparx Enterprise Architect"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="FModelType">
+    <eLiterals name="BLANK" literal="ModelType not specified"/>
+    <eLiterals name="PROCESS" value="1" literal="process"/>
+    <eLiterals name="COLLABORATION" value="2" literal="collaboration"/>
+    <eLiterals name="CHOREOGRAPHY" value="3" literal="choreography"/>
+  </eClassifiers>
+</ecore:EPackage>
